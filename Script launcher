@@ -1,0 +1,155 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "💰None of Your Business DEMO💰", HidePremium = false, SaveConfig = true, ConfigFolder = "ModMenuConfig"})
+
+local Settings = {
+    Notifications = true,
+    ESPEnabled = true
+}
+
+local TeleportTab = Window:MakeTab({
+    Name = "✈ Teleport",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+TeleportTab:AddLabel("ℹ You must be inside the house")
+
+local function teleportToPart(partName)
+    local player = game.Players.LocalPlayer
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local itemsFolder = game.Workspace:FindFirstChild("Items") 
+        if itemsFolder then
+            local part = itemsFolder:FindFirstChild(partName)
+            if part then
+                player.Character.HumanoidRootPart.CFrame = part.CFrame
+                if Settings.Notifications then
+                    OrionLib:MakeNotification({
+                        Name = "Success",
+                        Content = "Teleported to " .. partName .. "!",
+                        Image = "rbxassetid://4483345998",
+                        Time = 3
+                    })
+                end
+            end
+        end
+    end
+end
+
+local function teleportToModel(modelName)
+    local player = game.Players.LocalPlayer
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local model = game.Workspace:FindFirstChild(modelName)
+        if model and model.PrimaryPart then
+            player.Character.HumanoidRootPart.CFrame = model.PrimaryPart.CFrame
+            if Settings.Notifications then
+                OrionLib:MakeNotification({
+                    Name = "Success",
+                    Content = "Teleported to " .. modelName .. "!",
+                    Image = "rbxassetid://4483345998",
+                    Time = 3
+                })
+            end
+        end
+    end
+end
+
+TeleportTab:AddButton({Name = "Teleport to Hammer", Callback = function() teleportToPart("Hammer") end})
+TeleportTab:AddButton({Name = "Teleport to BasementKey", Callback = function() teleportToPart("BasementKey") end})
+TeleportTab:AddButton({Name = "Teleport to BasementDoor", Callback = function() teleportToModel("BasementDoor") end})
+TeleportTab:AddButton({Name = "Teleport to BackDoor", Callback = function() teleportToModel("BackDoor") end})
+
+local ESPTab = Window:MakeTab({
+    Name = "👁 ESP",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local function toggleESP(partName)
+    if not Settings.ESPEnabled then return end
+
+    local itemsFolder = game.Workspace:FindFirstChild("Items")
+    if itemsFolder then
+        local part = itemsFolder:FindFirstChild(partName)
+        if part then
+            if part:FindFirstChild("ESPBox") then
+                part.ESPBox:Destroy()
+                if Settings.Notifications then
+                    OrionLib:MakeNotification({
+                        Name = "ESP Disabled",
+                        Content = "ESP removed from " .. partName .. "!",
+                        Image = "rbxassetid://4483345998",
+                        Time = 3
+                    })
+                end
+            else
+                local box = Instance.new("BoxHandleAdornment")
+                box.Name = "ESPBox"
+                box.Adornee = part
+                box.Size = part.Size + Vector3.new(0.3, 0.3, 0.3)
+                box.Color3 = Color3.fromRGB(255, 0, 0)
+                box.Transparency = 0.3
+                box.AlwaysOnTop = true
+                box.ZIndex = 5
+                box.Parent = part
+
+                if Settings.Notifications then
+                    OrionLib:MakeNotification({
+                        Name = "ESP Enabled",
+                        Content = "ESP added to " .. partName .. "!",
+                        Image = "rbxassetid://4483345998",
+                        Time = 3
+                    })
+                end
+            end
+        end
+    end
+end
+
+ESPTab:AddButton({Name = "ESP for Hammer", Callback = function() toggleESP("Hammer") end})
+ESPTab:AddButton({Name = "ESP for BasementKey", Callback = function() toggleESP("BasementKey") end})
+
+local KeybindsTab = Window:MakeTab({
+    Name = "⌨ Keybinds",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+KeybindsTab:AddBind({Name = "Teleport to Hammer", Default = nil, Hold = false, Callback = function() teleportToPart("Hammer") end})
+KeybindsTab:AddBind({Name = "Teleport to BasementKey", Default = nil, Hold = false, Callback = function() teleportToPart("BasementKey") end})
+KeybindsTab:AddBind({Name = "Teleport to BasementDoor", Default = nil, Hold = false, Callback = function() teleportToModel("BasementDoor") end})
+KeybindsTab:AddBind({Name = "Teleport to BackDoor", Default = nil, Hold = false, Callback = function() teleportToModel("BackDoor") end})
+KeybindsTab:AddBind({Name = "Toggle ESP for Hammer", Default = nil, Hold = false, Callback = function() toggleESP("Hammer") end})
+KeybindsTab:AddBind({Name = "Toggle ESP for BasementKey", Default = nil, Hold = false, Callback = function() toggleESP("BasementKey") end})
+
+local SettingsTab = Window:MakeTab({
+    Name = "⚙ Settings",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+SettingsTab:AddToggle({
+    Name = "Enable Notifications",
+    Default = true,
+    Callback = function(value)
+        Settings.Notifications = value
+    end
+})
+
+SettingsTab:AddToggle({
+    Name = "Enable ESP Boxes",
+    Default = true,
+    Callback = function(value)
+        Settings.ESPEnabled = value
+    end
+})
+
+local CreditsTab = Window:MakeTab({
+    Name = "📜 Credits",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+CreditsTab:AddLabel("💡 Made by Xiaon32")
+
+OrionLib:Init()
