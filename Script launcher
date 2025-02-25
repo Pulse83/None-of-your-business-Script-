@@ -1,5 +1,10 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
+if game.PlaceId ~= 18891048528 then
+    game.Players.LocalPlayer:Kick("This script only works in the supported game.")
+    return
+end
+
 local Window = OrionLib:MakeWindow({Name = "💰None of Your Business DEMO💰", HidePremium = false, SaveConfig = true, ConfigFolder = "ModMenuConfig"})
 
 local Settings = {
@@ -115,12 +120,12 @@ local KeybindsTab = Window:MakeTab({
     PremiumOnly = false
 })
 
-KeybindsTab:AddBind({Name = "Teleport to Hammer", Default = nil, Hold = false, Callback = function() teleportToPart("Hammer") end})
-KeybindsTab:AddBind({Name = "Teleport to BasementKey", Default = nil, Hold = false, Callback = function() teleportToPart("BasementKey") end})
-KeybindsTab:AddBind({Name = "Teleport to BasementDoor", Default = nil, Hold = false, Callback = function() teleportToModel("BasementDoor") end})
-KeybindsTab:AddBind({Name = "Teleport to BackDoor", Default = nil, Hold = false, Callback = function() teleportToModel("BackDoor") end})
-KeybindsTab:AddBind({Name = "Toggle ESP for Hammer", Default = nil, Hold = false, Callback = function() toggleESP("Hammer") end})
-KeybindsTab:AddBind({Name = "Toggle ESP for BasementKey", Default = nil, Hold = false, Callback = function() toggleESP("BasementKey") end})
+KeybindsTab:AddBind({Name = "Teleport to Hammer", Default = ".", Hold = false, Callback = function() teleportToPart("Hammer") end})
+KeybindsTab:AddBind({Name = "Teleport to BasementKey", Default = ".", Hold = false, Callback = function() teleportToPart("BasementKey") end})
+KeybindsTab:AddBind({Name = "Teleport to BasementDoor", Default = ".", Hold = false, Callback = function() teleportToModel("BasementDoor") end})
+KeybindsTab:AddBind({Name = "Teleport to BackDoor", Default = ".", Hold = false, Callback = function() teleportToModel("BackDoor") end})
+KeybindsTab:AddBind({Name = "Toggle ESP for Hammer", Default = ".", Hold = false, Callback = function() toggleESP("Hammer") end})
+KeybindsTab:AddBind({Name = "Toggle ESP for BasementKey", Default = ".", Hold = false, Callback = function() toggleESP("BasementKey") end})
 
 local SettingsTab = Window:MakeTab({
     Name = "⚙ Settings",
