@@ -64,11 +64,19 @@ TeleportTab:AddButton({Name = "Teleport to BasementKey", Callback = function() t
 TeleportTab:AddButton({Name = "Teleport to BasementDoor", Callback = function() teleportToModel("BasementDoor") end})
 TeleportTab:AddButton({Name = "Teleport to BackDoor", Callback = function() teleportToModel("BackDoor") end})
 
-local ESPTab = Window:MakeTab({
-    Name = "👁 ESP",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+local function createESP(object, color)
+    if object and not object:FindFirstChild("ESPBox") then
+        local box = Instance.new("BoxHandleAdornment")
+        box.Name = "ESPBox"
+        box.Adornee = object
+        box.Size = object.Size + Vector3.new(0.3, 0.3, 0.3)
+        box.Color3 = color
+        box.Transparency = 0.3
+        box.AlwaysOnTop = true
+        box.ZIndex = 5
+        box.Parent = object
+    end
+end
 
 local function toggleESP(partName)
     if not Settings.ESPEnabled then return end
@@ -79,40 +87,36 @@ local function toggleESP(partName)
         if part then
             if part:FindFirstChild("ESPBox") then
                 part.ESPBox:Destroy()
-                if Settings.Notifications then
-                    OrionLib:MakeNotification({
-                        Name = "ESP Disabled",
-                        Content = "ESP removed from " .. partName .. "!",
-                        Image = "rbxassetid://4483345998",
-                        Time = 3
-                    })
-                end
             else
-                local box = Instance.new("BoxHandleAdornment")
-                box.Name = "ESPBox"
-                box.Adornee = part
-                box.Size = part.Size + Vector3.new(0.3, 0.3, 0.3)
-                box.Color3 = Color3.fromRGB(255, 0, 0)
-                box.Transparency = 0.3
-                box.AlwaysOnTop = true
-                box.ZIndex = 5
-                box.Parent = part
-
-                if Settings.Notifications then
-                    OrionLib:MakeNotification({
-                        Name = "ESP Enabled",
-                        Content = "ESP added to " .. partName .. "!",
-                        Image = "rbxassetid://4483345998",
-                        Time = 3
-                    })
-                end
+                createESP(part, Color3.fromRGB(255, 0, 0))
             end
         end
     end
 end
 
+local function togglePlayerESP()
+    local localPlayer = game.Players.LocalPlayer
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local root = player.Character.HumanoidRootPart
+            if root:FindFirstChild("ESPBox") then
+                root.ESPBox:Destroy()
+            else
+                createESP(root, Color3.fromRGB(0, 255, 0))
+            end
+        end
+    end
+end
+
+local ESPTab = Window:MakeTab({
+    Name = "👁 ESP",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
 ESPTab:AddButton({Name = "ESP for Hammer", Callback = function() toggleESP("Hammer") end})
 ESPTab:AddButton({Name = "ESP for BasementKey", Callback = function() toggleESP("BasementKey") end})
+ESPTab:AddButton({Name = "ESP for Players", Callback = togglePlayerESP})
 
 local KeybindsTab = Window:MakeTab({
     Name = "⌨ Keybinds",
@@ -126,6 +130,7 @@ KeybindsTab:AddBind({Name = "Teleport to BasementDoor", Default = ".", Hold = fa
 KeybindsTab:AddBind({Name = "Teleport to BackDoor", Default = ".", Hold = false, Callback = function() teleportToModel("BackDoor") end})
 KeybindsTab:AddBind({Name = "Toggle ESP for Hammer", Default = ".", Hold = false, Callback = function() toggleESP("Hammer") end})
 KeybindsTab:AddBind({Name = "Toggle ESP for BasementKey", Default = ".", Hold = false, Callback = function() toggleESP("BasementKey") end})
+KeybindsTab:AddBind({Name = "Toggle ESP for Players", Default = ".", Hold = false, Callback = togglePlayerESP})
 
 local SettingsTab = Window:MakeTab({
     Name = "⚙ Settings",
